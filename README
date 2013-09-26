@@ -1,0 +1,98 @@
+README
+
+---
+github/kaiwan/rh_attendance
+---
+The Runner's High automated attendance project; an RFID<->Arduino -based solution.
+---
+
+RFID 125 TTL <--> Arduino (Uno) : RFID Tag Reader
+ 
+ The RFID reader has these 5 header pins:
+ 
+ D0 - Data (Wiegand protocol only)
+ D1 - Data (Wiegand protocol only)
+ TX - TTL RFID serial data out
+ GND
+ 5V
+ 
+ Basic Schematic:: Arduino Uno - pins used:
+ 
+ (on POWER header)    5V        --> RFID reader 5V 
+ (on POWER header)    GND       --> RFID reader GND
+ (on serial RX ) DIO 0 (RX)     <-- RFID reader TX
+ (in DIGITAL (PWM~) upper header)
+ 
+ RFID reader chip module (ext antenna):
+ http://www.nskelectronics.com/rfid-_ttl.html
+ (purchased from Tenet Technetronics)
+ 
+ Theory of Operation:
+ --------------------
+ The RFID tag card we're using (as of now) has 2 numbers printed on it's surface. For eg:
+ 0000354181  005,26501
+ 
+ Apparently (ahem! unsure!) the unique RFID tag is the second (on-the-right) 8-digit number
+ (excluding the 'comma' "," character). 
+ The chip reader, when it reads a tag, transmits the 8-digit unique serial # to it's TX pin. We route the 
+ chip reader TX to the Arduino's serial-in (RX) pin # 0 (on the upper DIGITAL (PWM~) header.
+ The sketch below does a serial read (8 times, 1 byte each time) to retrieve the data, then ensures
+ that it flushes the Tx/Rx serial buffers on the Arduino. 
+ That's it!
+ -------------------------------------
+ Now, how do we store the tags in a non-volatile manner??
+ One option is to use an Arduino SDcard Shield..
+ --------------------------------------
+ Common issue faced:
+ When all 3 wires are connected between the devices and you hit the 'Upload' button, you see the error:
+ "avrdude: stk500_recv(): programmer is not responding" 
+ -OR-
+ "avrdude: stk500_getsync(): not in sync: resp=0x00"
+ 
+ Solution: looks like the Arduino Rx being connected to the RFID reader is causing an issue on the upload; so 
+ just disconnect the Rx pin when uploading. Then it's fine; re-connect to test...
+ Of course, once programmed and powered-off, the Arduino runs the existing code on the microcontroller flash
+ when powered back on; so it just works.
+ 
+ 13Jun13:
+ Debug facilities: Added a "beeper" and two "debug" LEDs to the project.
+ Debug Beep / Lights Logic:
+ 
+ ---------------------------------------------------------------------------------
+ Event                |                  Response 
+ --------------------------------------------------------------------------------- 
+                                    |     Beeper           |     LEDs
+ --------------------------------------------------------------------------------- 
+ ----- INIT -----
+ 1. Power-on and init-in-progress   | 1 time  (50ms delay*)| blink both 1 time, 150ms delay
+ 2. Init passed! (=> SD ok)         | 2 times (50ms delay) | blink both 2 times, 150ms delay
+ ----- PROCESSING -----
+ 3. Successful read of RFID card    | RFID card auto-beeps | blink BLUE LED once, 200ms delay
+ ----- FAILURES -----
+ 4. setup(): 
+ a. FATAL: microSD card init fails| 5 times (500ms delay) | blink both LEDs FOREVER, 1000ms delay
+ b. loop(): Non-Fatal:            | 5 times (500ms delay) | blink both 5 times, 500ms delay
+ c. File append failed (Fatal!)   | 10 times (500ms delay)| blink both LEDs FOREVER, 1000ms delay
+ d. (serial TTL) read exceeded    |                       |
+     MAXLEN bytes                 |                       |
+ *delay: delay in milliseconds between beeps or LEDs On/Off (how long they stay On/Off)
+ ---------------------------------------------------------------------------------
+ 
+ ===================================
+ Note!
+ ===================================
+ 1. With the Sparkfun MicroSD shield attached, Don't use digital I/O lines 10-13 on the board;
+ as it uses them.
+ 2. SCM: git; any code changes must be fed into the git repo
+ 3. When reading the SDcard on a computer, first close any stale version of the attendance logfile.
+ =================================== 
+
+ TODOs:
+ 1. Circuit schematic
+ 
+ -------------------------------------- 
+ * Author: Kaiwan N Billimoria
+ * < kaiwan.billimoria -at- gmail -dot- com >
+ * (c) Runner's High, June 2013.
+ * License: LGPL / GPL
+
