@@ -1,6 +1,11 @@
 /*
  * RFID 125 TTL <--> Arduino (Uno) : RFID Tag Reader
  *
+ 
+Project hosted on github:
+https://github.com/kaiwan/rh_attendance
+
+
  The RFID reader has these 5 header pins:
  
  D0 - Data (Wiegand protocol only)

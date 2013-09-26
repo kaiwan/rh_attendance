@@ -1,7 +1,11 @@
 README
 
 ---
-github/kaiwan/rh_attendance
+Hosted on github:
+https://github.com/kaiwan/rh_attendance
+
+Clone URL:
+https://github.com/kaiwan/rh_attendance.git
 ---
 The Runner's High automated attendance project; an RFID<->Arduino -based solution.
 ---
@@ -95,4 +99,12 @@ RFID 125 TTL <--> Arduino (Uno) : RFID Tag Reader
  * < kaiwan.billimoria -at- gmail -dot- com >
  * (c) Runner's High, June 2013.
  * License: LGPL / GPL
+ -------------------------------------- 
+
+Github stuff:
+To setup, had to do:
+
+git remote add origin https://github.com/kaiwan/rh_attendance.git    # add remote
+git pull origin master   # bring in latest..
+git push origin master   # push out latest..
 
