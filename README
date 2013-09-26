@@ -108,3 +108,6 @@ git remote add origin https://github.com/kaiwan/rh_attendance.git    # add remot
 git pull origin master   # bring in latest..
 git push origin master   # push out latest..
 
+To cache the credential (username/pswd) for an hour (convenient):
+git config --global credential.helper 'cache --timeout=3600'
+
